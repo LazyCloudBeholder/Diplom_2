@@ -14,7 +14,7 @@ import static io.restassured.RestAssured.given;
 public class ApiClient {
 
     public ApiClient() {
-        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site";
+        RestAssured.baseURI = "https://stellarburgers.education-services.ru";
     }
 
     @Step("Отправляет запрос на создание пользователя")
@@ -95,6 +95,12 @@ public class ApiClient {
         return given()
                 .when()
                 .get("/api/orders");
+    }
+
+    @Step("Отправляет запрос на получение данных о ингредиентах")
+    public Response getIngredients(){
+        return  given()
+                .get("/api/ingredients");
     }
 
 }

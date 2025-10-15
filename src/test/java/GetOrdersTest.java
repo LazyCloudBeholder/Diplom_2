@@ -1,14 +1,10 @@
 import client.ApiClient;
 import io.restassured.response.Response;
-import model.AuthResponse;
-import model.Ingredients;
-import model.OrderList;
-import model.UserRegistration;
+import model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static Consts.IngredientsId.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,14 +12,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GetOrdersTest {
     private String token = "Not null";
     ApiClient apiClient = new ApiClient();
+    private final String email = "practest@gmail.ru";
+    private final String password= "123456";
+    private final String name = "Олег";
 
     @Test
     @DisplayName("Проверка получения списка заказов")
     public void getOrdersTest(){
-        UserRegistration userRegistration = new UserRegistration().setEmail("practest@gmail.ru").setPassword("12345").setName("Олег");
+        UserRegistration userRegistration = new UserRegistration().setEmail(email).setPassword(password).setName(name);
         Response registerResponse = apiClient.createUser(userRegistration);
         token = registerResponse.as(AuthResponse.class).getAccessToken();
-        Ingredients ingredients = new Ingredients().setIngredients(new String[]{CRATER_BUN ,SAUCE_SPICY_X,PROTOSTOMIA_MEAT,MINERAL_RINGS,FLUORESCENT_BUN});
+        Response getIngredients = apiClient.getIngredients();
+        Ingredients ingredients = new Ingredients();
+        ingredients.setAllIngredients(getIngredients.as(IngredientsGetResponse.class));
         apiClient.createOrderWithAuth(token, ingredients);
         Response gerOrdersResponse = apiClient.getOrders(token);
         OrderList orders = gerOrdersResponse.as(OrderList.class);

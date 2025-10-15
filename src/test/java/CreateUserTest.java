@@ -15,11 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CreateUserTest {
     ApiClient apiClient = new ApiClient();
     private String token = "Not null";
+    private final String email = "practest@gmail.ru";
+    private final String password= "123456";
+    private final String name = "Олег";
 
     @Test
     @DisplayName("Проверка возможности создать пользователя")
     public void createUserTest(){
-        UserRegistration userRegistration = new UserRegistration().setEmail("practest@gmail.ru").setPassword("12345").setName("Олег");
+        UserRegistration userRegistration = new UserRegistration().setEmail(email).setPassword(password).setName(name);
         Response response = apiClient.createUser(userRegistration);
         token = response.as(AuthResponse.class).getAccessToken();
         assertEquals(200, response.getStatusCode(),"Неправильный статус код");
@@ -29,7 +32,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("Проверка создания уже существующего пользователя")
     public void createExistingUserTest(){
-        UserRegistration userRegistration = new UserRegistration().setEmail("practest@gmail.ru").setPassword("12345").setName("Олег");
+        UserRegistration userRegistration = new UserRegistration().setEmail(email).setPassword(password).setName(name);
         Response response = apiClient.createUser(userRegistration);
         token = response.as(AuthResponse.class).getAccessToken();
         Response response2 = apiClient.createUser(userRegistration);

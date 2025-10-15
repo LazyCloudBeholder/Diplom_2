@@ -8,4 +8,8 @@ import lombok.experimental.Accessors;
 public class Ingredients {
     private String[] ingredients;
 
+    public void setAllIngredients(IngredientsGetResponse response){
+        ingredients = response.getIngredientsIds();
+
+    }
 }

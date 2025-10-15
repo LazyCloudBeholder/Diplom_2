@@ -14,24 +14,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ChangeUserDataTest {
     private String token ="Not null";
     ApiClient apiClient = new ApiClient();
+    private final String email = "practest@gmail.ru";
+    private final String password= "123456";
+    private final String name = "Олег";
 
     @Test
     @DisplayName("Проверка возможности изменения данных пользователя")
     public void changeDataTest(){
-        UserRegistration userRegistration = new UserRegistration().setEmail("practest@gmail.ru").setPassword("12345").setName("Олег");
-        User newUserData = new User().setEmail("stariybog@gmail.ru").setName("Влад");
+        String newName = "Влад";
+        String newEmail = "stariybog@gmail.ru";
+        UserRegistration userRegistration = new UserRegistration().setEmail(email).setPassword(password).setName(name);
+        User newUserData = new User().setEmail(newEmail).setName(newName);
         Response registrationResponse = apiClient.createUser(userRegistration);
         token = registrationResponse.as(AuthResponse.class).getAccessToken();
         Response changeResponse = apiClient.changeUserDataWithAuth(token, newUserData);
         assertEquals(200, changeResponse.getStatusCode(),"Неправильный статус код");
-        assertTrue(changeResponse.asString().contains("Влад"),"Данные не изменились");
-        assertTrue(changeResponse.asString().contains("stariybog@gmail.ru"),"Данные не изменились");
+        assertTrue(changeResponse.asString().contains(newName),"Данные не изменились");
+        assertTrue(changeResponse.asString().contains(newEmail),"Данные не изменились");
     }
 
     @Test
     @DisplayName("Проверка возможности изменения данных пользователя без авторизации")
     public void changeDataWithoutAuthTest(){
-        User newUserData = new User().setEmail("stariybog@gmail.ru").setName("Влад");
+        User newUserData = new User().setEmail(email).setName(name);
         Response response = apiClient.changeDataWithoutAuth(newUserData);
         assertEquals(401, response.getStatusCode(),"Неправильный статус код");
         response.then().assertThat().body("message",equalTo("You should be authorised"));

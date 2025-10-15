@@ -14,12 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LoginUserTest {
     private String token = "Not null";
     ApiClient apiClient = new ApiClient();
+    private final String email = "practest@gmail.ru";
+    private final String password= "123456";
+    private final String name = "Олег";
 
     @Test
     @DisplayName("Проверка авторизации пользователя")
     public void loginUserTest(){
-        UserRegistration userRegistration = new UserRegistration().setEmail("practest@gmal.ru").setPassword("12345").setName("Олег");
-        UserLogin userLogin = new UserLogin().setEmail("practest@gmal.ru").setPassword("12345");
+        UserRegistration userRegistration = new UserRegistration().setEmail(email).setPassword(password).setName(name);
+        UserLogin userLogin = new UserLogin().setEmail(email).setPassword(password);
         apiClient.createUser(userRegistration);
         Response response = apiClient.loginUser(userLogin);
         token = response.as(AuthResponse.class).getAccessToken();
@@ -30,7 +33,9 @@ public class LoginUserTest {
     @Test
     @DisplayName("Проверка авторизации с неверным логином и паролем")
     public void loginUserWithWrongLoginAndPasswordTest(){
-        UserLogin userLogin = new UserLogin().setEmail("practest@gmail.ru").setPassword("12345");
+        String wrongEmail = "stariybog322@gmail.com";
+        String wrongPassword = "123123818";
+        UserLogin userLogin = new UserLogin().setEmail(wrongEmail).setPassword(wrongPassword);
         Response response = apiClient.loginUser(userLogin);
         assertEquals(401,response.getStatusCode(),"Неправильный статус код");
         response.then().assertThat().body("message",equalTo("email or password are incorrect"));
